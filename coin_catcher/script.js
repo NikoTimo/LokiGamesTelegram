@@ -38,7 +38,7 @@ images.diamond.src = "diamond.png";
 images.bomb.src = "bomb.png";
 images.heart.src = "hearth.png";
 
-// Функция масштабирования канваса под экран
+// Функция центрирования канваса
 function resizeCanvas() {
     let scale = Math.min(window.innerWidth / 300, window.innerHeight / 500);
     canvas.style.transform = `scale(${scale})`;
