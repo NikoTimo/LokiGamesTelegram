@@ -19,6 +19,7 @@ let score = 0;
 let lives = 3;
 let level = 1;
 let gameSpeed = 2; // Начальная скорость падения
+let bombChance = 0.05; // Начальный шанс выпадения бомбы (5%)
 
 const levelThresholds = [500, 1000, 2000, 3000, 5000, 7500, 10000, 12500, 15000, 20000, 25000];
 
@@ -27,13 +28,25 @@ const images = {
     player: new Image(),
     coin: new Image(),
     diamond: new Image(),
-    bomb: new Image()
+    bomb: new Image(),
+    heart: new Image()
 };
 
 images.player.src = "player.png";
 images.coin.src = "coin.png";
 images.diamond.src = "diamond.png";
 images.bomb.src = "bomb.png";
+images.heart.src = "hearth.png";
+
+// Функция масштабирования канваса под экран
+function resizeCanvas() {
+    let scale = Math.min(window.innerWidth / 300, window.innerHeight / 500);
+    canvas.style.transform = `scale(${scale})`;
+    canvas.style.transformOrigin = "top center";
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 
 document.addEventListener("keydown", movePlayer);
 canvas.addEventListener("click", movePlayer);
@@ -53,7 +66,19 @@ function movePlayer(event) {
 }
 
 function spawnObject() {
-    const type = Math.random() < 0.8 ? "coin" : Math.random() < 0.9 ? "diamond" : "bomb";
+    let rand = Math.random();
+    let type;
+
+    if (rand < bombChance) {
+        type = "bomb";
+    } else if (rand < 0.1) {
+        type = "heart"; // 10% шанс выпадения сердца
+    } else if (rand < 0.8) {
+        type = "coin";
+    } else {
+        type = "diamond";
+    }
+
     objects.push({
         x: spawnPositions[Math.floor(Math.random() * spawnPositions.length)],
         y: 0,
@@ -78,6 +103,8 @@ function updateGame() {
             image = images.coin;
         } else if (objects[i].type === "diamond") {
             image = images.diamond;
+        } else if (objects[i].type === "heart") {
+            image = images.heart;
         } else {
             image = images.bomb;
         }
@@ -93,6 +120,9 @@ function updateGame() {
                 score += 10;
             } else if (objects[i].type === "diamond") {
                 score += 50;
+            } else if (objects[i].type === "heart") {
+                lives += 1;
+                score += 100;
             } else {
                 lives -= 1;
             }
@@ -112,6 +142,8 @@ function updateGame() {
         if (score >= levelThresholds[i] && level === i + 1) {
             level++;
             gameSpeed += 0.5; // Увеличиваем скорость падения
+            if (level >= 3) gameSpeed += 0.2; // С 3 уровня темп игры растёт быстрее
+            if (level <= 10) bombChance += 0.01; // До 10 уровня увеличиваем шанс бомбы (максимум 15%)
         }
     }
 
@@ -134,6 +166,7 @@ function resetGame() {
     lives = 3;
     level = 1;
     gameSpeed = 2;
+    bombChance = 0.05;
     objects.length = 0;
 }
 

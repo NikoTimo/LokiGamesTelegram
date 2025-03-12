@@ -1,15 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     text-align: center;
     font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Высота на весь экран */
+    overflow: hidden; /* Убираем скролл */
+    background-color: #e0f7fa;
 }
 
 canvas {
     border: 2px solid black;
-    background-color: #e0f7fa;
+    display: block;
+    width: 100vw;  /* Используем всю ширину экрана */
+    max-width: 300px; /* Фиксируем максимальную ширину */
+    height: auto;
+    max-height: 500px; /* Ограничиваем высоту */
 }
 
 h1 {
     margin-bottom: 10px;
+    font-size: 24px;
 }
 
 p {
