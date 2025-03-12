@@ -43,6 +43,7 @@ function resizeCanvas() {
     let scale = Math.min(window.innerWidth / 300, window.innerHeight / 500);
     canvas.style.transform = `scale(${scale})`;
     canvas.style.transformOrigin = "top center";
+    canvas.style.margin = "0 auto";
 }
 
 window.addEventListener("resize", resizeCanvas);
