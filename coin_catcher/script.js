@@ -4,7 +4,7 @@ const ctx = canvas.getContext("2d");
 canvas.width = 400;
 canvas.height = 600;
 
-const spawnPositions = [50, 150, 250, 350]; // Скорректированные точки спавна и передвижения
+const spawnPositions = [50, 125, 200, 275, 350]; // Точки спавна (объекты и игрок)
 const player = {
     x: spawnPositions[2], // Начальная позиция игрока (по центру)
     y: 550,
@@ -18,7 +18,9 @@ const objects = [];
 let score = 0;
 let lives = 3;
 let level = 1;
-let gameSpeed = 2; // Начальная скорость
+let gameSpeed = 2; // Начальная скорость падения
+
+const levelThresholds = [500, 1000, 2000, 3000, 5000, 7500, 10000, 12500, 15000, 20000, 25000];
 
 document.addEventListener("keydown", movePlayer);
 canvas.addEventListener("click", movePlayer);
@@ -40,10 +42,10 @@ function movePlayer(event) {
 function spawnObject() {
     const type = Math.random() < 0.8 ? "coin" : Math.random() < 0.9 ? "diamond" : "bomb";
     objects.push({
-        x: spawnPositions[Math.floor(Math.random() * spawnPositions.length)], // Выбор случайной точки спавна
+        x: spawnPositions[Math.floor(Math.random() * spawnPositions.length)], // Объекты падают в тех же местах, где находится игрок
         y: 0,
-        width: 40,
-        height: 40,
+        width: 50,
+        height: 50,
         type: type
     });
 }
@@ -92,6 +94,14 @@ function updateGame() {
         }
     }
 
+    // Проверяем, достиг ли игрок нового уровня
+    for (let i = 0; i < levelThresholds.length; i++) {
+        if (score >= levelThresholds[i] && level === i + 1) {
+            level++;
+            gameSpeed += 0.5; // Увеличиваем скорость падения
+        }
+    }
+
     // Обновляем интерфейс
     document.getElementById("score").innerText = score;
     document.getElementById("lives").innerText = lives;
@@ -114,11 +124,6 @@ function resetGame() {
     objects.length = 0;
 }
 
-// Ускоряем игру каждые 15 секунд
-setInterval(() => {
-    gameSpeed += 0.3;
-    level++;
-}, 15000);
-
+// Генерация объектов каждую секунду
 setInterval(spawnObject, 1000);
 updateGame();
