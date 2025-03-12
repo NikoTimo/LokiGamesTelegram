@@ -4,40 +4,46 @@ const ctx = canvas.getContext("2d");
 canvas.width = 400;
 canvas.height = 600;
 
+const spawnPositions = [50, 150, 250, 350]; // Скорректированные точки спавна и передвижения
 const player = {
-    x: 200,
+    x: spawnPositions[2], // Начальная позиция игрока (по центру)
     y: 550,
-    width: 40,
-    height: 40,
-    speed: 100
+    width: 50,
+    height: 50,
+    speed: 1,
+    index: 2 // Индекс позиции на оси X
 };
 
 const objects = [];
-const spawnPositions = [50, 150, 250, 350];
 let score = 0;
 let lives = 3;
-let gameSpeed = 2;
+let level = 1;
+let gameSpeed = 2; // Начальная скорость
 
 document.addEventListener("keydown", movePlayer);
 canvas.addEventListener("click", movePlayer);
 
 function movePlayer(event) {
     if (event.key === "ArrowLeft" || event.clientX < canvas.width / 2) {
-        player.x -= player.speed;
-        if (player.x < 0) player.x = 0;
+        if (player.index > 0) {
+            player.index--;
+            player.x = spawnPositions[player.index];
+        }
     } else if (event.key === "ArrowRight" || event.clientX > canvas.width / 2) {
-        player.x += player.speed;
-        if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+        if (player.index < spawnPositions.length - 1) {
+            player.index++;
+            player.x = spawnPositions[player.index];
+        }
     }
 }
 
 function spawnObject() {
     const type = Math.random() < 0.8 ? "coin" : Math.random() < 0.9 ? "diamond" : "bomb";
     objects.push({
-        x: spawnPositions[Math.floor(Math.random() * spawnPositions.length)],
+        x: spawnPositions[Math.floor(Math.random() * spawnPositions.length)], // Выбор случайной точки спавна
         y: 0,
-        width: 30,
-        height: 30,
+        width: 40,
+        height: 40,
         type: type
     });
 }
@@ -63,11 +69,10 @@ function updateGame() {
 
         ctx.fillRect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
 
-        // Проверка столкновения
+        // Проверка столкновения с игроком
         if (
             objects[i].y + objects[i].height >= player.y &&
-            objects[i].x < player.x + player.width &&
-            objects[i].x + objects[i].width > player.x
+            objects[i].x === player.x
         ) {
             if (objects[i].type === "coin") {
                 score += 10;
@@ -90,10 +95,11 @@ function updateGame() {
     // Обновляем интерфейс
     document.getElementById("score").innerText = score;
     document.getElementById("lives").innerText = lives;
+    document.getElementById("level").innerText = level;
 
     // Проверяем, проиграл ли игрок
     if (lives <= 0) {
-        alert("Game Over! Your score: " + score);
+        alert(`Game Over! Your score: ${score} | Level: ${level}`);
         resetGame();
     }
 
@@ -103,15 +109,16 @@ function updateGame() {
 function resetGame() {
     score = 0;
     lives = 3;
-    objects.length = 0;
+    level = 1;
     gameSpeed = 2;
+    objects.length = 0;
 }
 
-// Ускоряем игру каждые 10 секунд
+// Ускоряем игру каждые 15 секунд
 setInterval(() => {
-    gameSpeed += 0.2;
-}, 10000);
+    gameSpeed += 0.3;
+    level++;
+}, 15000);
 
 setInterval(spawnObject, 1000);
 updateGame();
- 
