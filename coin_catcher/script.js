@@ -1,13 +1,13 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = 400;
-canvas.height = 600;
+canvas.width = 300;
+canvas.height = 500;
 
-const spawnPositions = [50, 125, 200, 275, 350]; // Точки спавна (объекты и игрок)
+const spawnPositions = [30, 90, 150, 210, 270]; // Корректные точки спавна
 const player = {
     x: spawnPositions[2], // Начальная позиция игрока (по центру)
-    y: 550,
+    y: 440,
     width: 50,
     height: 50,
     speed: 1,
@@ -21,6 +21,19 @@ let level = 1;
 let gameSpeed = 2; // Начальная скорость падения
 
 const levelThresholds = [500, 1000, 2000, 3000, 5000, 7500, 10000, 12500, 15000, 20000, 25000];
+
+// Загрузка изображений
+const images = {
+    player: new Image(),
+    coin: new Image(),
+    diamond: new Image(),
+    bomb: new Image()
+};
+
+images.player.src = "player.png";
+images.coin.src = "coin.png";
+images.diamond.src = "diamond.png";
+images.bomb.src = "bomb.png";
 
 document.addEventListener("keydown", movePlayer);
 canvas.addEventListener("click", movePlayer);
@@ -42,10 +55,10 @@ function movePlayer(event) {
 function spawnObject() {
     const type = Math.random() < 0.8 ? "coin" : Math.random() < 0.9 ? "diamond" : "bomb";
     objects.push({
-        x: spawnPositions[Math.floor(Math.random() * spawnPositions.length)], // Объекты падают в тех же местах, где находится игрок
+        x: spawnPositions[Math.floor(Math.random() * spawnPositions.length)],
         y: 0,
-        width: 50,
-        height: 50,
+        width: 40,
+        height: 40,
         type: type
     });
 }
@@ -53,23 +66,23 @@ function spawnObject() {
 function updateGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Рисуем игрока
-    ctx.fillStyle = "blue";
-    ctx.fillRect(player.x, player.y, player.width, player.height);
+    // Рисуем игрока (корзину)
+    ctx.drawImage(images.player, player.x, player.y, player.width, player.height);
 
     // Двигаем и рисуем объекты
     for (let i = 0; i < objects.length; i++) {
         objects[i].y += gameSpeed;
 
+        let image;
         if (objects[i].type === "coin") {
-            ctx.fillStyle = "gold";
+            image = images.coin;
         } else if (objects[i].type === "diamond") {
-            ctx.fillStyle = "cyan";
+            image = images.diamond;
         } else {
-            ctx.fillStyle = "red";
+            image = images.bomb;
         }
 
-        ctx.fillRect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
+        ctx.drawImage(image, objects[i].x, objects[i].y, objects[i].width, objects[i].height);
 
         // Проверка столкновения с игроком
         if (
