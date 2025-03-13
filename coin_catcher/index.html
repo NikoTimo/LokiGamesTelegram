@@ -7,7 +7,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
+    <div id="start-screen">
+        <h1>Coin Catcher</h1>
+        <button onclick="startGame()">Start</button>
+    </div>
+
+    <div id="game-container" style="display: none;">
         <div id="scoreboard">
             Score: <span id="score">0</span> | 
             Lives: <span id="lives">3</span> | 
