@@ -1,18 +1,43 @@
 body {
-    text-align: center;
+    margin: 0;
+    overflow: hidden;
     font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #87CEEB, #1E90FF);
 }
 
-canvas {
-    border: 2px solid black;
-    background-color: #e0f7fa;
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
 }
 
-h1 {
-    margin-bottom: 10px;
+#scoreboard {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    color: white;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    border-radius: 8px;
 }
 
-p {
-    font-size: 18px;
-    font-weight: bold;
+.falling-item {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-size: cover;
+}
+
+#basket {
+    position: absolute;
+    bottom: 10px;
+    width: 60px;
+    height: 40px;
+    background: url('sprites/basket.png') no-repeat center;
+    background-size: cover;
+    left: 50%;
+    transform: translateX(-50%);
 }

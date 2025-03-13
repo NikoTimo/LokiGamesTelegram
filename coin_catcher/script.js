@@ -1,116 +1,122 @@
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+const gameContainer = document.getElementById('game-container');
+const basket = document.getElementById('basket');
+const scoreDisplay = document.getElementById('score');
+const livesDisplay = document.getElementById('lives');
+const levelDisplay = document.getElementById('level');
 
-canvas.width = 400;
-canvas.height = 600;
-
-const player = {
-    x: 200,
-    y: 550,
-    width: 40,
-    height: 40,
-    speed: 100
-};
-
-const objects = [];
-const spawnPositions = [50, 150, 250, 350];
 let score = 0;
 let lives = 3;
-let gameSpeed = 2;
+let level = 1;
+const spawnPoints = [10, 25, 50, 75, 90]; // Процентные позиции для спавна элементов
+let basketIndex = 2; // Начальная позиция (центральный спот)
 
-document.addEventListener("keydown", movePlayer);
-canvas.addEventListener("click", movePlayer);
+// Функция создания падающих элементов
+function createItem() {
+    const item = document.createElement('div');
+    item.classList.add('falling-item');
 
-function movePlayer(event) {
-    if (event.key === "ArrowLeft" || event.clientX < canvas.width / 2) {
-        player.x -= player.speed;
-        if (player.x < 0) player.x = 0;
-    } else if (event.key === "ArrowRight" || event.clientX > canvas.width / 2) {
-        player.x += player.speed;
-        if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+    const randomType = Math.random();
+    if (randomType < 0.6) {
+        item.style.backgroundImage = "url('sprites/coin.png')";
+        item.dataset.type = "coin";
+    } else if (randomType < 0.85) {
+        item.style.backgroundImage = "url('sprites/diamond.png')";
+        item.dataset.type = "diamond";
+    } else if (randomType < 0.90) {
+        item.style.backgroundImage = "url('sprites/heart.png')";
+        item.dataset.type = "heart";
+    } else {
+        item.style.backgroundImage = "url('sprites/bomb.png')";
+        item.dataset.type = "bomb";
     }
+
+    const spawnIndex = Math.floor(Math.random() * spawnPoints.length);
+    item.style.left = `${spawnPoints[spawnIndex]}%`;
+    item.style.top = "-50px";
+    gameContainer.appendChild(item);
+
+    fallDown(item, spawnIndex);
 }
 
-function spawnObject() {
-    const type = Math.random() < 0.8 ? "coin" : Math.random() < 0.9 ? "diamond" : "bomb";
-    objects.push({
-        x: spawnPositions[Math.floor(Math.random() * spawnPositions.length)],
-        y: 0,
-        width: 30,
-        height: 30,
-        type: type
-    });
-}
+// Функция падения элементов
+function fallDown(item, spawnIndex) {
+    let fallSpeed = 2 + level * 0.5;
+    let interval = setInterval(() => {
+        item.style.top = `${parseInt(item.style.top) + fallSpeed}px`;
 
-function updateGame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Рисуем игрока
-    ctx.fillStyle = "blue";
-    ctx.fillRect(player.x, player.y, player.width, player.height);
-
-    // Двигаем и рисуем объекты
-    for (let i = 0; i < objects.length; i++) {
-        objects[i].y += gameSpeed;
-
-        if (objects[i].type === "coin") {
-            ctx.fillStyle = "gold";
-        } else if (objects[i].type === "diamond") {
-            ctx.fillStyle = "cyan";
-        } else {
-            ctx.fillStyle = "red";
-        }
-
-        ctx.fillRect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
-
-        // Проверка столкновения
-        if (
-            objects[i].y + objects[i].height >= player.y &&
-            objects[i].x < player.x + player.width &&
-            objects[i].x + objects[i].width > player.x
-        ) {
-            if (objects[i].type === "coin") {
-                score += 10;
-            } else if (objects[i].type === "diamond") {
-                score += 50;
-            } else {
-                lives -= 1;
+        if (parseInt(item.style.top) > window.innerHeight - 80) {
+            if (spawnIndex === basketIndex) {
+                handleCatch(item.dataset.type);
             }
-            objects.splice(i, 1);
-            i--;
+            gameContainer.removeChild(item);
+            clearInterval(interval);
         }
-
-        // Удаляем объект, если он вышел за экран
-        if (objects[i] && objects[i].y > canvas.height) {
-            objects.splice(i, 1);
-            i--;
-        }
-    }
-
-    // Обновляем интерфейс
-    document.getElementById("score").innerText = score;
-    document.getElementById("lives").innerText = lives;
-
-    // Проверяем, проиграл ли игрок
-    if (lives <= 0) {
-        alert("Game Over! Your score: " + score);
-        resetGame();
-    }
-
-    requestAnimationFrame(updateGame);
+    }, 20);
 }
 
+// Функция обработки пойманных предметов
+function handleCatch(type) {
+    if (type === "coin") {
+        score += 100;
+    } else if (type === "diamond") {
+        score += 500;
+    } else if (type === "heart") {
+        lives = Math.min(5, lives + 1);
+    } else if (type === "bomb") {
+        lives--;
+        if (lives <= 0) {
+            alert("Game Over! Final Score: " + score);
+            resetGame();
+            return;
+        }
+    }
+
+    updateUI();
+    checkLevelUp();
+}
+
+// Проверка на повышение уровня
+function checkLevelUp() {
+    const levelThresholds = [1000, 2000, 3000, 5000, 7500, 10000, 14000, 20000, 25000];
+    if (level < 10 && score >= levelThresholds[level - 1]) {
+        level++;
+        updateUI();
+    }
+}
+
+// Обновление интерфейса
+function updateUI() {
+    scoreDisplay.textContent = score;
+    livesDisplay.textContent = lives;
+    levelDisplay.textContent = level;
+}
+
+// Функция сброса игры
 function resetGame() {
     score = 0;
     lives = 3;
-    objects.length = 0;
-    gameSpeed = 2;
+    level = 1;
+    updateUI();
 }
 
-// Ускоряем игру каждые 10 секунд
-setInterval(() => {
-    gameSpeed += 0.2;
-}, 10000);
+// Движение корзины
+function moveBasket(direction) {
+    if (direction === "left" && basketIndex > 0) {
+        basketIndex--;
+    } else if (direction === "right" && basketIndex < spawnPoints.length - 1) {
+        basketIndex++;
+    }
+    basket.style.left = `${spawnPoints[basketIndex]}%`;
+}
 
-setInterval(spawnObject, 1000);
-updateGame();
+// Управление с клавиатуры
+document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") {
+        moveBasket("left");
+    } else if (event.key === "ArrowRight") {
+        moveBasket("right");
+    }
+});
+
+// Запуск спавна элементов
+setInterval(createItem, 1000);
