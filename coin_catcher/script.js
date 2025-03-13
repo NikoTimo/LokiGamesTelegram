@@ -1,13 +1,13 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = 300;
-canvas.height = 500;
+canvas.width = 280;  // Уменьшили ширину
+canvas.height = 450; // Уменьшили высоту
 
-const spawnPositions = [30, 90, 150, 210, 270]; // Корректные точки спавна
+const spawnPositions = [20, 80, 140, 200, 260]; // Подправили точки спавна
 const player = {
     x: spawnPositions[2], // Начальная позиция игрока (по центру)
-    y: 440,
+    y: 400, // Сдвинули вверх, чтобы он был виден полностью
     width: 50,
     height: 50,
     speed: 1,
@@ -18,8 +18,8 @@ const objects = [];
 let score = 0;
 let lives = 3;
 let level = 1;
-let gameSpeed = 2; // Начальная скорость падения
-let bombChance = 0.05; // Начальный шанс выпадения бомбы (5%)
+let gameSpeed = 2;
+let bombChance = 0.05;
 
 const levelThresholds = [500, 1000, 2000, 3000, 5000, 7500, 10000, 12500, 15000, 20000, 25000];
 
@@ -40,10 +40,9 @@ images.heart.src = "hearth.png";
 
 // Функция центрирования канваса
 function resizeCanvas() {
-    let scale = Math.min(window.innerWidth / 300, window.innerHeight / 500);
+    let scale = Math.min(window.innerWidth / 280, window.innerHeight / 450);
     canvas.style.transform = `scale(${scale})`;
     canvas.style.transformOrigin = "top center";
-    canvas.style.margin = "0 auto";
 }
 
 window.addEventListener("resize", resizeCanvas);
@@ -142,9 +141,9 @@ function updateGame() {
     for (let i = 0; i < levelThresholds.length; i++) {
         if (score >= levelThresholds[i] && level === i + 1) {
             level++;
-            gameSpeed += 0.5; // Увеличиваем скорость падения
-            if (level >= 3) gameSpeed += 0.2; // С 3 уровня темп игры растёт быстрее
-            if (level <= 10) bombChance += 0.01; // До 10 уровня увеличиваем шанс бомбы (максимум 15%)
+            gameSpeed += 0.5; 
+            if (level >= 3) gameSpeed += 0.2; 
+            if (level <= 10) bombChance += 0.01; 
         }
     }
 
