@@ -1,97 +1,43 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = 280;
-canvas.height = 450;
+canvas.width = 400;
+canvas.height = 600;
 
-const spawnPositions = [20, 80, 140, 200, 260]; 
 const player = {
-    x: spawnPositions[2], 
-    y: 400,
-    width: 50,
-    height: 50,
-    speed: 1,
-    index: 2 
+    x: 200,
+    y: 550,
+    width: 40,
+    height: 40,
+    speed: 100
 };
 
 const objects = [];
+const spawnPositions = [50, 150, 250, 350];
 let score = 0;
 let lives = 3;
-let level = 1;
 let gameSpeed = 2;
-let bombChance = 0.05;
-
-const levelThresholds = [500, 1000, 2000, 3000, 5000, 7500, 10000, 12500, 15000, 20000, 25000];
-
-const images = {
-    player: new Image(),
-    coin: new Image(),
-    diamond: new Image(),
-    bomb: new Image(),
-    heart: new Image()
-};
-
-images.player.src = "player.png";
-images.coin.src = "coin.png";
-images.diamond.src = "diamond.png";
-images.bomb.src = "bomb.png";
-images.heart.src = "hearth.png";
-
-// Проверка ориентации экрана
-function checkOrientation() {
-    const warning = document.getElementById("orientation-warning");
-    if (window.innerWidth > window.innerHeight) {
-        warning.style.display = "flex";
-        canvas.style.display = "none";
-    } else {
-        warning.style.display = "none";
-        canvas.style.display = "block";
-    }
-}
-
-// Исправляем проблему с отсутствием игры
-window.addEventListener("resize", checkOrientation);
-document.addEventListener("DOMContentLoaded", () => {
-    checkOrientation();
-    updateGame();
-});
-
-function movePlayer(event) {
-    if (event.key === "ArrowLeft" || event.clientX < canvas.width / 2) {
-        if (player.index > 0) {
-            player.index--;
-            player.x = spawnPositions[player.index];
-        }
-    } else if (event.key === "ArrowRight" || event.clientX > canvas.width / 2) {
-        if (player.index < spawnPositions.length - 1) {
-            player.index++;
-            player.x = spawnPositions[player.index];
-        }
-    }
-}
 
 document.addEventListener("keydown", movePlayer);
 canvas.addEventListener("click", movePlayer);
 
-function spawnObject() {
-    let rand = Math.random();
-    let type;
-
-    if (rand < bombChance) {
-        type = "bomb";
-    } else if (rand < 0.1) {
-        type = "heart";
-    } else if (rand < 0.8) {
-        type = "coin";
-    } else {
-        type = "diamond";
+function movePlayer(event) {
+    if (event.key === "ArrowLeft" || event.clientX < canvas.width / 2) {
+        player.x -= player.speed;
+        if (player.x < 0) player.x = 0;
+    } else if (event.key === "ArrowRight" || event.clientX > canvas.width / 2) {
+        player.x += player.speed;
+        if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
     }
+}
 
+function spawnObject() {
+    const type = Math.random() < 0.8 ? "coin" : Math.random() < 0.9 ? "diamond" : "bomb";
     objects.push({
         x: spawnPositions[Math.floor(Math.random() * spawnPositions.length)],
         y: 0,
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         type: type
     });
 }
@@ -99,32 +45,34 @@ function spawnObject() {
 function updateGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.drawImage(images.player, player.x, player.y, player.width, player.height);
+    // Рисуем игрока
+    ctx.fillStyle = "blue";
+    ctx.fillRect(player.x, player.y, player.width, player.height);
 
+    // Двигаем и рисуем объекты
     for (let i = 0; i < objects.length; i++) {
         objects[i].y += gameSpeed;
 
-        let image;
         if (objects[i].type === "coin") {
-            image = images.coin;
+            ctx.fillStyle = "gold";
         } else if (objects[i].type === "diamond") {
-            image = images.diamond;
-        } else if (objects[i].type === "heart") {
-            image = images.heart;
+            ctx.fillStyle = "cyan";
         } else {
-            image = images.bomb;
+            ctx.fillStyle = "red";
         }
 
-        ctx.drawImage(image, objects[i].x, objects[i].y, objects[i].width, objects[i].height);
+        ctx.fillRect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
 
-        if (objects[i].y + objects[i].height >= player.y && objects[i].x === player.x) {
+        // Проверка столкновения
+        if (
+            objects[i].y + objects[i].height >= player.y &&
+            objects[i].x < player.x + player.width &&
+            objects[i].x + objects[i].width > player.x
+        ) {
             if (objects[i].type === "coin") {
                 score += 10;
             } else if (objects[i].type === "diamond") {
                 score += 50;
-            } else if (objects[i].type === "heart") {
-                lives += 1;
-                score += 100;
             } else {
                 lives -= 1;
             }
@@ -132,27 +80,20 @@ function updateGame() {
             i--;
         }
 
+        // Удаляем объект, если он вышел за экран
         if (objects[i] && objects[i].y > canvas.height) {
             objects.splice(i, 1);
             i--;
         }
     }
 
-    for (let i = 0; i < levelThresholds.length; i++) {
-        if (score >= levelThresholds[i] && level === i + 1) {
-            level++;
-            gameSpeed += 0.5;
-            if (level >= 3) gameSpeed += 0.2;
-            if (level <= 10) bombChance += 0.01;
-        }
-    }
-
+    // Обновляем интерфейс
     document.getElementById("score").innerText = score;
     document.getElementById("lives").innerText = lives;
-    document.getElementById("level").innerText = level;
 
+    // Проверяем, проиграл ли игрок
     if (lives <= 0) {
-        alert(`Game Over! Your score: ${score} | Level: ${level}`);
+        alert("Game Over! Your score: " + score);
         resetGame();
     }
 
@@ -162,11 +103,14 @@ function updateGame() {
 function resetGame() {
     score = 0;
     lives = 3;
-    level = 1;
-    gameSpeed = 2;
-    bombChance = 0.05;
     objects.length = 0;
+    gameSpeed = 2;
 }
 
-// Генерация объектов каждую секунду
+// Ускоряем игру каждые 10 секунд
+setInterval(() => {
+    gameSpeed += 0.2;
+}, 10000);
+
 setInterval(spawnObject, 1000);
+updateGame();
