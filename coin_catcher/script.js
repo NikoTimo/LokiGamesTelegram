@@ -7,8 +7,8 @@ const levelDisplay = document.getElementById('level');
 let score = 0;
 let lives = 3;
 let level = 1;
-const spawnPoints = [10, 25, 50, 75, 90]; // Процентные позиции для спавна элементов
-let basketIndex = 2; // Начальная позиция (центральный спот)
+const spawnPoints = [10, 30, 50, 70, 90]; // 5 точек сверху и снизу
+let basketIndex = 2; // Начальная позиция в центре
 
 let gameInterval;
 
@@ -40,7 +40,7 @@ function createItem() {
     }
 
     const spawnIndex = Math.floor(Math.random() * spawnPoints.length);
-    item.style.left = `${spawnPoints[spawnIndex]}%`;
+    item.style.left = `calc(${spawnPoints[spawnIndex]}% - 25px)`; // Центрируем предметы
     item.style.top = "-50px";
     gameContainer.appendChild(item);
 
@@ -53,14 +53,20 @@ function fallDown(item, spawnIndex) {
     let interval = setInterval(() => {
         item.style.top = `${parseInt(item.style.top) + fallSpeed}px`;
 
-        if (parseInt(item.style.top) > window.innerHeight - 80) {
+        // Проверка столкновения с корзиной
+        if (parseInt(item.style.top) >= (window.innerHeight - 100)) {
             if (spawnIndex === basketIndex) {
                 handleCatch(item.dataset.type);
+                gameContainer.removeChild(item); // Удаляем объект при поймании
             }
+        }
+
+        // Удаление элемента после падения
+        if (parseInt(item.style.top) > window.innerHeight) {
             gameContainer.removeChild(item);
             clearInterval(interval);
         }
-    }, 15 - level); // Чем выше уровень, тем быстрее предметы падают
+    }, 15 - level);
 }
 
 // Функция обработки пойманных предметов
@@ -115,7 +121,7 @@ function moveBasket(direction) {
     } else if (direction === "right" && basketIndex < spawnPoints.length - 1) {
         basketIndex++;
     }
-    basket.style.left = `${spawnPoints[basketIndex]}%`;
+    basket.style.left = `calc(${spawnPoints[basketIndex]}% - 25px)`;
 }
 
 // Управление с клавиатуры
