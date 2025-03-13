@@ -26,19 +26,18 @@ body {
 
 .falling-item {
     position: absolute;
-    width: 50px; /* Квадратный размер */
-    height: 50px;
-    background-size: contain; /* Правильное отображение спрайта */
+    width: 50px; /* Увеличен размер для лучшего выравнивания */
+    height: 50px; /* Квадратная форма */
+    background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
     transition: top linear;
 }
 
 #basket {
     position: absolute;
-    bottom: 20px; /* Чуть выше, чтобы не обрезалось */
-    width: 50px; /* Теперь квадрат */
-    height: 50px;
+    bottom: 10px;
+    width: 50px; /* Теперь корзина квадратная */
+    height: 50px; /* Соответствует предметам */
     background: url('sprites/basket.png') no-repeat center;
     background-size: contain;
     left: 50%;
