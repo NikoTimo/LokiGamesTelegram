@@ -1,5 +1,11 @@
 const secretCode = generateCode();
 let attempts = 0;
+let currentGuess = [];
+
+const currentGuessDiv = document.getElementById("currentGuess");
+const guessesDiv = document.getElementById("guesses");
+const resultDiv = document.getElementById("result");
+const keyboardDiv = document.getElementById("keyboard");
 
 function generateCode() {
   const digits = '0123456789';
@@ -11,26 +17,53 @@ function generateCode() {
   return code;
 }
 
+function buildKeyboard() {
+  for (let i = 0; i <= 9; i++) {
+    const img = document.createElement("img");
+    img.src = `assets/B${i}.png`;
+    img.onclick = () => addSymbol(i);
+    keyboardDiv.appendChild(img);
+  }
+}
+
+function addSymbol(digit) {
+  if (currentGuess.length >= 6) return;
+  currentGuess.push(digit);
+  renderCurrentGuess();
+}
+
+function clearGuess() {
+  currentGuess = [];
+  renderCurrentGuess();
+}
+
+function renderCurrentGuess() {
+  currentGuessDiv.innerHTML = "";
+  for (let i = 0; i < currentGuess.length; i++) {
+    const img = document.createElement("img");
+    img.src = `assets/B${currentGuess[i]}.png`;
+    currentGuessDiv.appendChild(img);
+  }
+}
+
 function submitGuess() {
-  const input = document.getElementById("guessInput");
-  const guess = input.value;
-  if (guess.length !== 6 || !/^\d+$/.test(guess)) {
-    alert("Введите ровно 6 цифр от 0 до 9.");
+  if (currentGuess.length !== 6) {
+    alert("Выбери 6 символов.");
     return;
   }
 
+  const guess = currentGuess.join("");
   const result = compareCodes(secretCode, guess);
   renderGuess(guess, result);
-
   attempts++;
-  input.value = "";
+  clearGuess();
 
   if (result.bulls === 6) {
-    document.getElementById("result").innerText = "🔓 Шифр разгадан!";
-    document.getElementById("inputRow").style.display = "none";
+    resultDiv.innerText = "🔓 Шифр разгадан!";
+    keyboardDiv.innerHTML = "";
   } else if (attempts >= 5) {
-    document.getElementById("result").innerText = `❌ Попытки закончились. Код был: ${secretCode}`;
-    document.getElementById("inputRow").style.display = "none";
+    resultDiv.innerText = `❌ Попытки закончились. Код был: ${secretCode}`;
+    keyboardDiv.innerHTML = "";
   }
 }
 
@@ -62,9 +95,7 @@ function renderGuess(guess, result) {
     row.appendChild(img);
   }
 
-  const text = document.createElement("span");
-  text.innerText = ` — 🟢 ${result.bulls} | 🟡 ${result.cows}`;
-  row.appendChild(text);
-
-  document.getElementById("guesses").appendChild(row);
+  guessesDiv.appendChild(row);
 }
+
+buildKeyboard();

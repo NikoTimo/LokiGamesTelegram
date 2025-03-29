@@ -3,21 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Alchemical Cipher</title>
+  <title>Alchemical</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="game-container">
-    <h1>🜁 Alchemical Cipher</h1>
+    <h1>🜁 Alchemical</h1>
     <p class="instructions">Угадай шифр из 6 символов (0–9). У тебя 5 попыток.</p>
-    
-    <div id="guesses"></div>
 
-    <div class="input-row" id="inputRow">
-      <input type="text" maxlength="6" id="guessInput" placeholder="Введите 6 цифр" />
+    <div id="currentGuess" class="guess-line"></div>
+
+    <div id="keyboard" class="keyboard"></div>
+
+    <div class="controls">
       <button onclick="submitGuess()">Проверить</button>
+      <button onclick="clearGuess()">Очистить</button>
     </div>
 
+    <div id="guesses"></div>
     <div id="result"></div>
   </div>
 
