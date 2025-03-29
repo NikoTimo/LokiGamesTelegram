@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cluedo Solo Telegram Mini App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Раскройте тайну!</h1>
+
+        <div id="game-board" class="game-board">
+            </div>
+
+        <div class="controls">
+            <p>Счет: <span id="score">100</span></p>
+            <button id="open-card-button">Открыть карту (-<span id="next-card-cost">5</span>)</button>
+            <button id="accuse-button">Обвинить</button>
+        </div>
+
+        <div id="accusation-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2>Ваше обвинение</h2>
+                <div class="accusation-form">
+                    <div class="form-group">
+                        <label for="suspect">Подозреваемый:</label>
+                        <select id="suspect">
+                            <option value="Госпожа Пикок">Госпожа Пикок</option>
+                            <option value="Профессор Плам">Профессор Плам</option>
+                            <option value="Доктор Орхидея">Доктор Орхидея</option>
+                            <option value="Полковник Мастард">Полковник Мастард</option>
+                            <option value="Мисс Скарлет">Мисс Скарлет</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="weapon">Оружие:</label>
+                        <select id="weapon">
+                            <option value="Револьвер">Револьвер</option>
+                            <option value="Кинжал">Кинжал</option>
+                            <option value="Верёвка">Верёвка</option>
+                            <option value="Канделябр">Канделябр</option>
+                            <option value="Яд">Яд</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Место преступления:</label>
+                        <select id="location">
+                            <option value="Библиотека">Библиотека</option>
+                            <option value="Гостиная">Гостиная</option>
+                            <option value="Столовая">Столовая</option>
+                            <option value="Зимний сад">Зимний сад</option>
+                            <option value="Кухня">Кухня</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="motive">Мотив:</label>
+                        <select id="motive">
+                            <option value="Ревность">Ревность</option>
+                            <option value="Наследство">Наследство</option>
+                            <option value="Шантаж">Шантаж</option>
+                            <option value="Долги">Долги</option>
+                            <option value="Личная месть">Личная месть</option>
+                        </select>
+                    </div>
+                    <button id="submit-accusation">Подтвердить обвинение</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="result-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h2 id="result-title"></h2>
+                <p id="result-message"></p>
+                <button id="play-again-button">Играть снова</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
