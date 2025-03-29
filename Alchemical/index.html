@@ -2,13 +2,12 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Алхимические Шифры</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
-    <meta name="screen-orientation" content="portrait">
 </head>
 <body>
     <div id="orientation-warning">
@@ -33,8 +32,7 @@
         </div>
 
         <div class="game-area hidden">
-            <div class="attempts">
-                </div>
+            <div class="attempts"></div>
 
             <div class="current-attempt">
                 <div class="attempt-cell"></div>
@@ -58,8 +56,7 @@
             <button id="restart-button">Новая игра</button>
         </div>
 
-        <div class="available-symbols">
-            </div>
+        <div class="available-symbols"></div>
 
         <footer>
             <p>Осталось попыток: <span id="attempts-left">5</span></p>
@@ -68,9 +65,9 @@
 
     <script src="script.js"></script>
     <script>
-        // Инициализация Telegram Web App
         const tg = window.Telegram.WebApp;
         tg.ready();
+        tg.expand();
     </script>
 </body>
 </html>
