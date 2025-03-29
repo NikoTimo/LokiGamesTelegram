@@ -1,0 +1,60 @@
+body {
+  font-family: 'Georgia', serif;
+  background: url('https://i.imgur.com/zYIlgBl.jpg'); /* фон свитка */
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  color: #2e2e2e;
+}
+
+.game-container {
+  max-width: 500px;
+  margin: 40px auto;
+  background: rgba(255, 248, 220, 0.9);
+  padding: 20px;
+  border: 3px solid #5e4522;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+h1 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.instructions {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.input-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+input {
+  width: 150px;
+  padding: 5px;
+  font-size: 16px;
+}
+
+button {
+  padding: 6px 12px;
+  font-size: 16px;
+  background-color: #5e4522;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+#guesses img {
+  height: 40px;
+  margin: 2px;
+}
+
+.guess-line {
+  margin-bottom: 10px;
+}

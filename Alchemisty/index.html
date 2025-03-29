@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alchemical Cipher</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="game-container">
+    <h1>🜁 Alchemical Cipher</h1>
+    <p class="instructions">Угадай шифр из 6 символов (0–9). У тебя 5 попыток.</p>
+    
+    <div id="guesses"></div>
+
+    <div class="input-row" id="inputRow">
+      <input type="text" maxlength="6" id="guessInput" placeholder="Введите 6 цифр" />
+      <button onclick="submitGuess()">Проверить</button>
+    </div>
+
+    <div id="result"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
