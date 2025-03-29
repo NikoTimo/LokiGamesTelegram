@@ -1,29 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Alchemical</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Алхимические Шифры</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
+    <meta name="screen-orientation" content="portrait">
 </head>
 <body>
-  <div class="game-container">
-    <h1>🜁 Alchemical</h1>
-    <p class="instructions">Угадай шифр из 6 символов (0–9). У тебя 5 попыток.</p>
+    <div id="orientation-warning">
+        <p>Пожалуйста, поверните устройство вертикально для лучшего опыта.</p>
+    </div>
+    <div class="container">
+        <header>
+            <h1>Алхимические Шифры</h1>
+        </header>
 
-    <div id="currentGuess" class="guess-line"></div>
+        <div class="rules-screen">
+            <h2>Правила игры</h2>
+            <p>Добро пожаловать в игру "Алхимические Шифры"! Ваша задача - разгадать секретный код, состоящий из 6 уникальных цифр от 0 до 9.</p>
+            <p>После каждой вашей попытки вы будете получать подсказки:</p>
+            <ul>
+                <li><span class="bull-indicator colored-text">Зеленый</span> символ означает, что цифра находится на правильном месте.</li>
+                <li><span class="cow-indicator colored-text">Желтый</span> символ означает, что цифра присутствует в секретном коде, но находится на другом месте.</li>
+                <li><span class="miss-indicator colored-text">Красный</span> символ означает, что цифры нет в секретном коде.</li>
+            </ul>
+            <p>У вас есть 5 попыток, чтобы взломать шифр. Удачи!</p>
+            <button id="start-game-button">Начать игру</button>
+        </div>
 
-    <div id="keyboard" class="keyboard"></div>
+        <div class="game-area hidden">
+            <div class="attempts">
+                </div>
 
-    <div class="controls">
-      <button onclick="submitGuess()">Проверить</button>
-      <button onclick="clearGuess()">Очистить</button>
+            <div class="current-attempt">
+                <div class="attempt-cell"></div>
+                <div class="attempt-cell"></div>
+                <div class="attempt-cell"></div>
+                <div class="attempt-cell"></div>
+                <div class="attempt-cell"></div>
+                <div class="attempt-cell"></div>
+            </div>
+
+            <div class="controls">
+                <button id="submit-button" disabled>Проверить</button>
+                <button id="clear-button">Очистить</button>
+                <p id="attempts-remaining-display">Осталось попыток: 5</p>
+            </div>
+        </div>
+
+        <div class="win-screen hidden">
+            <h2>Поздравляем!</h2>
+            <p>Вы взломали алхимический шифр!</p>
+            <button id="restart-button">Новая игра</button>
+        </div>
+
+        <div class="available-symbols">
+            </div>
+
+        <footer>
+            <p>Осталось попыток: <span id="attempts-left">5</span></p>
+        </footer>
     </div>
 
-    <div id="guesses"></div>
-    <div id="result"></div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Инициализация Telegram Web App
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+    </script>
 </body>
 </html>
